@@ -1,6 +1,7 @@
 package com.security.login_and_registrationwithservletandjsp;
 
 import jakarta.servlet.RequestDispatcher;
+import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -32,15 +33,53 @@ public class RegistirationServlet extends HttpServlet {
 //            out.println("<h1>" + message + "</h1>");
 //            out.println("</body></html>");
 //        }
-        public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
 
             String uname = request.getParameter("name");
             String uemail = request.getParameter("email");
             String upwd = request.getParameter("pass");
+            String repeatpwd = request.getParameter("re_pass");
+
             String uphone = request.getParameter("contact");
             RequestDispatcher dispatcher = null;
             Connection conn = null;
 
+            if(uname == null || uname.equals(""))
+            {
+                request.setAttribute("status" , "inValidUserName");
+                dispatcher = request.getRequestDispatcher("registration.jsp");
+                dispatcher.forward(request , response);
+            }
+            if(uemail == null || uemail.equals(""))
+            {
+                request.setAttribute("status" , "inValidEmail");
+                dispatcher = request.getRequestDispatcher("registration.jsp");
+                dispatcher.forward(request , response);
+            }
+            if(upwd == null || upwd.equals(""))
+            {
+                request.setAttribute("status" , "inValidPassword");
+                dispatcher = request.getRequestDispatcher("registration.jsp");
+                dispatcher.forward(request , response);
+            }
+            if(repeatpwd == null || repeatpwd.equals(""))
+            {
+                request.setAttribute("status" , "inValidPassword");
+                dispatcher = request.getRequestDispatcher("registration.jsp");
+                dispatcher.forward(request , response);
+            }
+            if(!repeatpwd.equals(upwd))
+            {
+                request.setAttribute("status" , "NotMatchedPassword");
+                dispatcher = request.getRequestDispatcher("registration.jsp");
+                dispatcher.forward(request , response);
+            }
+            if(upwd.length() < 8)
+            {
+                request.setAttribute("status" , "lengthTooShortPassword");
+                dispatcher = request.getRequestDispatcher("registration.jsp");
+                dispatcher.forward(request , response);
+            }
             try{
                 Class.forName("org.postgresql.Driver");
 

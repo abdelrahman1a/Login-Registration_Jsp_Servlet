@@ -1,6 +1,7 @@
 package com.security.login_and_registrationwithservletandjsp;
 
 import jakarta.servlet.RequestDispatcher;
+import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -14,13 +15,26 @@ import java.sql.*;
 @WebServlet("/login")
 public class LoginServlet extends HttpServlet {
 
-    public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
 
         String uemail= request.getParameter("username");
         String upwd = request.getParameter("password");
         RequestDispatcher dispatcher = null;
         HttpSession session = request.getSession();
         Connection conn = null;
+
+        if(uemail == null || uemail.equals(""))
+        {
+            request.setAttribute("status" , "inValidEmail");
+            dispatcher = request.getRequestDispatcher("login.jsp");
+            dispatcher.forward(request , response);
+        }
+        if(upwd == null || upwd.equals(""))
+        {
+            request.setAttribute("status" , "inValidPassword");
+            dispatcher = request.getRequestDispatcher("login.jsp");
+            dispatcher.forward(request , response);
+        }
 
         try{
             Class.forName("org.postgresql.Driver");
